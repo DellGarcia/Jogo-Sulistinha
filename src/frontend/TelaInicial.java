@@ -81,7 +81,6 @@ public class TelaInicial extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				new TelaPrincipal();
 				setVisible(false);
 			}
@@ -91,8 +90,7 @@ public class TelaInicial extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				System.exit(0);
+				dispose();
 			}
 		});
 		
@@ -100,8 +98,8 @@ public class TelaInicial extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
+				new TelaSobre();
+//				setVisible(false);
 			}
 		});
 	}

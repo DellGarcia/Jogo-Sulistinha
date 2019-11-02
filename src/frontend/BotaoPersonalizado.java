@@ -56,4 +56,18 @@ public class BotaoPersonalizado extends JButton{
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		setCursor(new Cursor(Cursor.HAND_CURSOR));
 	}
+	
+	public BotaoPersonalizado() {
+		// TODO Auto-generated constructor stub
+		setFont(new Font("Lucida Console", Font.PLAIN, 25));
+		setBackground(Color.WHITE);
+		setForeground(Color.BLACK);
+		setOpaque(true);
+		setSelected(false);
+		setContentAreaFilled(false);
+		setOpaque(true);
+		setFocusPainted(false);
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		setCursor(new Cursor(Cursor.HAND_CURSOR));
+	}
 }

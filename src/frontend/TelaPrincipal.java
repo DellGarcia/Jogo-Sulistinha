@@ -1,15 +1,26 @@
 package frontend;
 import java.awt.Color;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
+import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 import backend.Jogo;
+import backend.Personagem;
 
 @SuppressWarnings("serial")
 public class TelaPrincipal extends JFrame {
@@ -18,12 +29,16 @@ public class TelaPrincipal extends JFrame {
 	private JPanel tela;
 	private JPanel areaQuestao;
 	
+	// JLabel
+	private JLabel lblEnunciado;
+	
 	// JTextArea
-	private JTextArea txaEnunciado;
 	private JTextArea txaAlternativas;
 	
 	// JRadioButton
-	private JRadioButton[] rbtnAlternativa;
+	private JButton[] btnAlternativa;
+	
+	private JProgressBar pbTempoResposta;
 	
 	// Toolkit
 	protected static Toolkit tk = Toolkit.getDefaultToolkit();
@@ -33,6 +48,13 @@ public class TelaPrincipal extends JFrame {
     private Jogo game;
     private int indexQuestao;
     
+    //Personagens
+    private Personagem principal;
+    private Personagem inimigo;
+    
+    // Thread
+    private Thread loading;
+    
     // Font
     private Font century;
     
@@ -41,9 +63,13 @@ public class TelaPrincipal extends JFrame {
 		// TODO Auto-generated constructor stub
 		tela = new JPanel();
 		areaQuestao = new JPanel();
-		txaEnunciado = new JTextArea();
+		lblEnunciado = new JLabel();
 		txaAlternativas = new JTextArea();
-		rbtnAlternativa = new JRadioButton[4];
+		btnAlternativa = new JButton[4];
+		principal = new Personagem();
+		principal.setInimigo(false);
+		inimigo = new Personagem();
+		inimigo.setInimigo(true);
 		century = new Font("Century Gothic", Font.PLAIN, 18);
 		game = new Jogo();
 		indexQuestao = 0;
@@ -67,35 +93,89 @@ public class TelaPrincipal extends JFrame {
 		setContentPane(tela);
 		
 		// Area da Questao
-		areaQuestao.setSize(1080, 720);
+		areaQuestao.setSize(dimension.width, 600);
 		areaQuestao.setLayout(null);
-		areaQuestao.setBackground(Color.LIGHT_GRAY);
-		areaQuestao.setLocation(getWidth()/2 - areaQuestao.getWidth()/2, getHeight()/2 - areaQuestao.getHeight()/2);
+		areaQuestao.setBackground(Color.DARK_GRAY);
+		areaQuestao.setLocation(0, dimension.height - areaQuestao.getHeight());
 		tela.add(areaQuestao);
 		
-		// Area do Emuciado da Questão
-		txaEnunciado.setSize(areaQuestao.getWidth()/100*90, areaQuestao.getHeight()/100*30);
-		txaEnunciado.setLocation(areaQuestao.getWidth()/2 - txaEnunciado.getWidth()/2, 20);
-		txaEnunciado.setText(game.getQuestions().get(indexQuestao).getEnunciado());
-		txaEnunciado.setEditable(false);
-		txaEnunciado.setFocusable(false);
-		txaEnunciado.setBackground(Color.BLACK);
-		txaEnunciado.setForeground(Color.WHITE);
-		txaEnunciado.setFont(century);
-		areaQuestao.add(txaEnunciado);
+		// Area do Enunciado da Questão
+		lblEnunciado.setSize(areaQuestao.getWidth()/100*40, areaQuestao.getHeight()/100*20);
+		lblEnunciado.setLocation(areaQuestao.getWidth()/2 - lblEnunciado.getWidth()/2, 20);
+		lblEnunciado.setText(game.getQuestions().get(indexQuestao).getEnunciado());
+		lblEnunciado.setFocusable(false);
+		lblEnunciado.setOpaque(true);
+		lblEnunciado.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEnunciado.setBackground(Color.WHITE);
+		lblEnunciado.setForeground(Color.BLACK);
+		lblEnunciado.setFont(century);
+		areaQuestao.add(lblEnunciado);
 		
-		txaAlternativas.setSize(areaQuestao.getWidth()/100*90, areaQuestao.getHeight()/100*50);
-		txaAlternativas.setLocation(areaQuestao.getWidth()/2 - txaAlternativas.getWidth()/2, areaQuestao.getHeight()/100*30 + 50);
-		int x = txaAlternativas.getWidth()/2 - areaQuestao.getWidth()/100*80/2, y = 20;
+		//Progress Bar
+		pbTempoResposta = new ProgressBar(0, 100, areaQuestao.getWidth()/100*50, 20);
+		pbTempoResposta.setLocation(areaQuestao.getWidth()/2 - pbTempoResposta.getWidth()/2, areaQuestao.getHeight()/100*30 + 50);
+		pbTempoResposta.setValue(20);
+		loading = new Thread(new CarregarBarra());
+		loading.start();		
+		areaQuestao.add(pbTempoResposta);
+		
+		// Area das alternativas
+		txaAlternativas.setSize(areaQuestao.getWidth()/100*60, areaQuestao.getHeight()/100*40);
+		txaAlternativas.setLocation(areaQuestao.getWidth()/2 - txaAlternativas.getWidth()/2, areaQuestao.getHeight()/100*30 + 100);
+		txaAlternativas.setLayout(new GridLayout(2, 2));
 		for(int i = 0; i < 4; i++) {
-			rbtnAlternativa[i] = new JRadioButton();
-			rbtnAlternativa[i].setText(txaAlternativas.getText() + game.getQuestions().get(indexQuestao).getAlternativas().get(i).getTexto());
-			rbtnAlternativa[i].setSize(areaQuestao.getWidth()/100*80, 50);
-			rbtnAlternativa[i].setLocation(x, y);
-			rbtnAlternativa[i].setBackground(Color.WHITE);
-			rbtnAlternativa[i].setFont(century);
-			txaAlternativas.add(rbtnAlternativa[i]);
-			y += 60;
+			btnAlternativa[i] = new BotaoPersonalizado();
+			btnAlternativa[i].setText(game.getQuestions().get(indexQuestao).getAlternativas().get(i).getTexto());
+			btnAlternativa[i].setBackground(Color.WHITE);
+			btnAlternativa[i].setForeground(Color.BLACK);
+			btnAlternativa[i].setHorizontalAlignment(SwingConstants.CENTER);
+			btnAlternativa[i].setFont(century);
+			int k = i;
+			btnAlternativa[i].addActionListener(new ActionListener() {
+				Timer timer = new Timer();
+				@SuppressWarnings("deprecation")
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					loading.stop();
+					if(game.isAtivo()) {
+						if(game.getQuestions().get(indexQuestao).getAlternativas().get(k).isCorreta()) {
+							btnAlternativa[k].setBackground(Color.GREEN);
+							game.setAcertos();
+							inimigo.setVidas();
+							if(inimigo.getVidas() == 0) {
+								JOptionPane.showMessageDialog(null, "Voce Ganhou");
+								game.setAtivo(false);
+							}
+						}else {
+							btnAlternativa[k].setBackground(Color.RED);
+							for(int j = 0; j < 4; j++) {
+								if(game.getQuestions().get(indexQuestao).getAlternativas().get(j).isCorreta()) {
+									btnAlternativa[j].setBackground(Color.GREEN);
+								}
+							}
+							game.setErros();
+							principal.setVidas();
+							if(principal.getVidas() == 0) {
+								JOptionPane.showMessageDialog(null, "Voce Perdeu");
+								game.setAtivo(false);
+							}
+						}
+						if(game.isAtivo()) {
+							game.setAtivo(false);
+							timer.schedule(new TimerTask() {
+								
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									atualizarQuestao();
+								}
+							}, 700);
+						}
+					}
+				}
+			});
+			txaAlternativas.add(btnAlternativa[i]);
 		}
 		txaAlternativas.setEditable(false);
 		txaAlternativas.setFocusable(false);
@@ -107,6 +187,38 @@ public class TelaPrincipal extends JFrame {
 		
 		setVisible(true);
 		
+	}
+	
+	public void atualizarQuestao() {
+		if(indexQuestao + 1 < game.getQuestions().size()) {
+			game.setAtivo(true);
+			indexQuestao++;
+			lblEnunciado.setText(game.getQuestions().get(indexQuestao).getEnunciado());
+			for(int i = 0; i < 4; i++) {
+				btnAlternativa[i].setBackground(Color.WHITE);
+				btnAlternativa[i].setText(game.getQuestions().get(indexQuestao).getAlternativas().get(i).getTexto());
+			}
+			loading = new Thread(new CarregarBarra());
+			loading.start();
+		}else {
+			JOptionPane.showMessageDialog(null, "O Jogo Acabou\nAcertos: " + game.getAcertos()  + "\nErros: " + game.getErros());
+		} 
+		
+	}
+	
+	/* Classe CarregarBarra */
+	public class CarregarBarra implements Runnable {
+		@Override
+		public void run() {
+			for (int i = 100; i > 0; i--) {
+				try {
+					Thread.sleep(50);
+					pbTempoResposta.setValue(i);
+				} catch (Exception e) {}
+			}
+			game.setErros();
+			atualizarQuestao();
+		}
 	}
 	
 }
