@@ -1,6 +1,5 @@
 package frontend;
 import java.awt.Color;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -28,6 +27,7 @@ public class TelaPrincipal extends JFrame {
 	// JPanel
 	private JPanel tela;
 	private JPanel areaQuestao;
+	private JPanel areaAnimacao;
 	
 	// JLabel
 	private JLabel lblEnunciado;
@@ -63,6 +63,7 @@ public class TelaPrincipal extends JFrame {
 		// TODO Auto-generated constructor stub
 		tela = new JPanel();
 		areaQuestao = new JPanel();
+		areaAnimacao = new JPanel();
 		lblEnunciado = new JLabel();
 		txaAlternativas = new JTextArea();
 		btnAlternativa = new JButton[4];
@@ -91,6 +92,11 @@ public class TelaPrincipal extends JFrame {
 		tela.setBackground(Color.WHITE);
 		tela.setLayout(null);
 		setContentPane(tela);
+		
+		// Animacao
+		areaAnimacao = new AnimacaoBatalha();
+		areaAnimacao.setLocation(0, 0);
+		tela.add(areaAnimacao);
 		
 		// Area da Questao
 		areaQuestao.setSize(dimension.width, 600);
