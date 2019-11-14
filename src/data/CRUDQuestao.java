@@ -9,13 +9,11 @@ import com.mysql.jdbc.Statement;
 public class CRUDQuestao {
 	
 	Statement state;
-
 	ResultSet resultset;
-
 	Conexao conex = new Conexao();
 	
 	public ArrayList<String[]> retornaQuestoes() {
-		String sql = "select * from tbQuestao";
+		String sql = "SELECT * FROM tbQuestao";
 
 		conex.conectar();
 		ArrayList<String[]> str = new ArrayList<String[]>();
@@ -46,8 +44,8 @@ public class CRUDQuestao {
 	public void insereQuestao(String pergunta, String correta, String errada[]) {
 		
 		
-		String sql = "insert into tbQuestao(pergunta, correta, errada1, errada2, errada3)"+
-						"values('" + pergunta + "', '" + correta + "', '" + errada[0] + "', '" + errada[1] + "', '" + errada[2] + "')";
+		String sql = "INSERT INTO tbQuestao(pergunta, correta, errada1, errada2, errada3)"+
+						"VALUES('" + pergunta + "', '" + correta + "', '" + errada[0] + "', '" + errada[1] + "', '" + errada[2] + "')";
 
 		conex.conectar();
 		
@@ -65,8 +63,8 @@ public class CRUDQuestao {
 	public void deletarQuestao(int idQuestao) {
 		
 		
-		String sql = "delete from tbQuestao "
-					+ "where idQuestao = " + idQuestao;
+		String sql = "DELETE FROM tbQuestao "
+					+ "WHERE idQuestao = " + idQuestao;
 
 		conex.conectar();
 		
@@ -83,8 +81,8 @@ public class CRUDQuestao {
 
 	public void alterarQuestao(int idQuestao, String pergunta, String correta, String errada[]) {
 		String sql = "UPDATE tbQuestao"
-				+ " set pergunta = '" + pergunta + "', correta = '" + correta + "', errada1 = '" + errada[0] + "', errada2 = '" + errada[1] + "', errada3 = '" + errada[2] + "'" +
-						" where idQuestao = '" + idQuestao + "'";
+				+ " SET pergunta = '" + pergunta + "', correta = '" + correta + "', errada1 = '" + errada[0] + "', errada2 = '" + errada[1] + "', errada3 = '" + errada[2] + "'" +
+						" WHERE idQuestao = '" + idQuestao + "'";
 
 		conex.conectar();
 		

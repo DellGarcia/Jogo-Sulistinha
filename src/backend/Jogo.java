@@ -3,6 +3,8 @@ package backend;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import model.Questao;
+
 public class Jogo {
 
 	// Atributos
@@ -11,7 +13,6 @@ public class Jogo {
 	private int total;
 	private int acertos;
 	private int erros;
-	
 	
 	// Construtor
 	public Jogo() {

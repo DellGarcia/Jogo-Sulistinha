@@ -16,7 +16,7 @@ public class Conexao {
 
 			// jdbc - e o driver da sun responsavel pela conexao (Java DataBase Connection)
 			// estabelece uma conexao
-			con = DriverManager.getConnection("jdbc:mysql://localhost/bdSulista", "root", "123456");
+			con = DriverManager.getConnection("jdbc:mysql://localhost/bdSulista", "root", "");
 
 //			System.out.println("Conexão realizada com sucesso.");
 		} catch (ClassNotFoundException ex) {

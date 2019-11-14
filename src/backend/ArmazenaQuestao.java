@@ -3,6 +3,7 @@ package backend;
 import java.util.ArrayList;
 
 import data.CRUDQuestao;
+import model.Questao;
 
 public class ArmazenaQuestao {
 	

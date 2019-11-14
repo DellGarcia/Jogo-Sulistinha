@@ -6,10 +6,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
@@ -60,6 +58,7 @@ public class TelaInicial extends JFrame {
 		
 		tela = new AnimacaoEntrada();
 		tela.setLayout(null);
+		tela.setBackground(Color.BLACK);
 		setContentPane(tela);
 
 		btnStartGame.setText("Start Game");
